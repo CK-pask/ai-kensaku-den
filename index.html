@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI検索殿 ｜ ブランド幕府</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #DFDFD8;
+      font-family: 'Noto Sans JP', sans-serif;
+      color: #14181B;
+    }
+
+    ::selection { background: #1A3651; color: #EFEDE4; }
+    input::placeholder { color: #9aa0a0; }
+
+    @keyframes spin  { to { transform: rotate(360deg); } }
+
+    /* ── Page shell ─────────────────────────────────────────────── */
+    .page {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      background-color: #DFDFD8;
+      background-image:
+        radial-gradient(1100px 620px at 50% -12%, rgba(26,54,81,0.08), transparent 70%),
+        repeating-linear-gradient(0deg,  rgba(18,26,34,0.02) 0 1px, transparent 1px 42px),
+        repeating-linear-gradient(90deg, rgba(18,26,34,0.02) 0 1px, transparent 1px 42px);
+    }
+
+    /* Watermark kanji */
+    .wm { position: absolute; font-family: 'Shippori Mincho', serif; font-weight: 800; color: #1A3651; pointer-events: none; user-select: none; z-index: 0; line-height: 0.8; }
+    .wm-baku { top: -5%; right: -3%; font-size: min(58vw, 640px); opacity: 0.05; }
+    .wm-den  { bottom: -7%; left: -4%; font-size: min(42vw, 440px); font-weight: 700; opacity: 0.035; }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────── */
+    header {
+      display: flex;
+      justify-content: center;
+      padding: 40px 0 30px;
+    }
+
+    .logo-wrap { display: flex; align-items: center; gap: 14px; }
+
+    .logo-box {
+      width: 50px; height: 50px;
+      border: 1px solid #1A3651;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(239,237,228,0.5);
+      box-shadow: inset 0 0 0 3px rgba(154,123,46,0.16);
+    }
+    .logo-box span { font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: 26px; color: #1A3651; }
+
+    .logo-text { display: flex; flex-direction: column; line-height: 1; }
+    .logo-name { font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: 23px; letter-spacing: 0.12em; color: #14181B; }
+    .logo-sub  { font-size: 9px; letter-spacing: 0.5em; color: #9A7B2E; margin-top: 7px; font-weight: 500; }
+
+    /* ── Dividers ────────────────────────────────────────────────── */
+    .divider {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; margin-bottom: 4px;
+    }
+    .divider.full { margin: 8px 0 0; }
+    .divider.full .div-line { flex: 1; opacity: 0.28; width: auto; }
+
+    .div-line    { height: 1px; width: 46px; background: #1A3651; opacity: 0.45; }
+    .div-diamond { width: 5px; height: 5px; border: 1px solid #9A7B2E; transform: rotate(45deg); }
+
+    /* ── Hero ────────────────────────────────────────────────────── */
+    .hero {
+      display: flex; flex-wrap: wrap;
+      align-items: center; gap: 28px;
+      padding: 46px 0 26px;
+    }
+
+    .hero-left { flex: 1 1 360px; min-width: 300px; }
+
+    .observe-label {
+      font-size: 10.5px; letter-spacing: 0.42em;
+      color: #9A7B2E; font-weight: 600; margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Shippori Mincho', serif;
+      font-weight: 700;
+      font-size: clamp(30px, 5.4vw, 46px);
+      line-height: 1.5;
+      letter-spacing: 0.04em;
+      margin: 0 0 20px;
+      color: #14181B;
+    }
+
+    .hero-desc {
+      font-size: 14.5px; line-height: 2.05;
+      color: #474C4E; margin: 0 0 30px;
+      max-width: 460px; font-weight: 300;
+    }
+    .hero-desc strong { color: #1A3651; font-weight: 500; }
+
+    .input-row { display: flex; flex-wrap: wrap; gap: 10px; max-width: 480px; }
+
+    .url-input {
+      flex: 1 1 240px; min-width: 0;
+      padding: 15px 17px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 15px; color: #14181B;
+      background: #F1EFE8;
+      border: 1px solid #CFCCC2; border-radius: 3px; outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .url-input:focus { border-color: #1A3651; box-shadow: 0 0 0 3px rgba(26,54,81,0.1); }
+
+    .submit-btn {
+      flex: 0 0 auto;
+      padding: 15px 32px;
+      font-family: 'Shippori Mincho', serif;
+      font-weight: 600; font-size: 16px; letter-spacing: 0.18em;
+      color: #EFEDE4; background: #1A3651;
+      border: none; border-bottom: 2px solid #9A7B2E; border-radius: 3px;
+      cursor: pointer; transition: background .2s;
+    }
+    .submit-btn:hover { background: #244a6e; }
+
+    .input-note { font-size: 11.5px; color: #7d8180; margin: 15px 0 0; letter-spacing: 0.04em; }
+
+    /* ── Character figure ────────────────────────────────────────── */
+    .char-figure {
+      flex: 0 0 auto;
+      width: clamp(224px, 28vw, 300px);
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .char-sun {
+      position: absolute; top: -7%; left: 50%;
+      transform: translateX(-50%);
+      width: 112%; aspect-ratio: 1; border-radius: 50%;
+      background: radial-gradient(circle at 40% 36%,
+        rgba(206,166,82,0.62) 0%, rgba(154,123,46,0.5) 44%,
+        rgba(138,108,40,0.22) 66%, rgba(138,108,40,0) 74%);
+      z-index: 0; pointer-events: none;
+    }
+
+    .char-lines {
+      position: absolute; top: -13%; right: -11%;
+      width: 50%; height: auto;
+      z-index: 0; opacity: 0.5; pointer-events: none;
+    }
+
+    .char-shadow {
+      position: absolute; bottom: -3%; left: 50%;
+      transform: translateX(-50%);
+      width: 124%; height: 36%;
+      background: radial-gradient(ellipse at center, rgba(14,24,34,0.5) 0%, rgba(14,24,34,0) 70%);
+      z-index: 0; filter: blur(7px); pointer-events: none;
+    }
+
+    .char-img {
+      position: relative; z-index: 2;
+      width: 100%; height: auto; display: block;
+      filter: drop-shadow(0 22px 30px rgba(14,24,34,0.28));
+    }
+
+    .char-label {
+      position: absolute; z-index: 3;
+      top: 11%; right: 9.5%;
+      writing-mode: vertical-rl;
+      font-family: 'Shippori Mincho', serif;
+      font-weight: 600;
+      font-size: clamp(11px, 1.5vw, 15px);
+      letter-spacing: 0.2em;
+      color: #EFEDE4;
+      transform: rotate(-2.5deg);
+      text-shadow: 0 1px 2px rgba(26,54,81,0.55);
+      pointer-events: none;
+    }
+
+    /* ── Loading ─────────────────────────────────────────────────── */
+    .loading-section {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 18px; padding: 74px 0;
+    }
+
+    .spinner {
+      width: 42px; height: 42px;
+      border: 2px solid rgba(26,54,81,0.16);
+      border-top-color: #1A3651;
+      border-radius: 50%;
+      animation: spin .9s linear infinite;
+    }
+
+    .loading-text {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 17px; letter-spacing: 0.14em; color: #1A3651;
+    }
+    .loading-text span { font-size: 13px; color: #7d8180; }
+
+    /* ── Error ───────────────────────────────────────────────────── */
+    .error-section {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 12px; padding: 62px 0;
+    }
+
+    .error-icon {
+      width: 40px; height: 40px;
+      border: 1.5px solid #A1402F; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #A1402F; font-family: 'Shippori Mincho', serif; font-size: 22px;
+    }
+
+    .error-msg { font-size: 14.5px; color: #474C4E; letter-spacing: 0.02em; }
+
+    /* ── Result card ─────────────────────────────────────────────── */
+    .result-section { padding: 40px 0 0; }
+
+    .result-card {
+      background: #F1EFE8;
+      border: 1px solid #CFCCC2; border-radius: 5px;
+      padding: clamp(22px, 4vw, 38px);
+      box-shadow: 0 12px 32px rgba(14,24,34,0.07);
+    }
+
+    .result-header {
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between; align-items: center;
+      gap: 10px; margin-bottom: 24px;
+    }
+
+    .result-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(15px, 2.4vw, 18px); color: #14181B; letter-spacing: 0.03em;
+    }
+    .result-host  { color: #1A3651; }
+    .result-sep   { color: #b3afa2; margin: 0 10px; }
+    .result-badge {
+      flex: 0 0 auto; font-size: 10.5px; letter-spacing: 0.16em;
+      color: #9A7B2E; border: 1px solid #9A7B2E; border-radius: 999px;
+      padding: 5px 13px; font-weight: 500;
+    }
+
+    .score-row {
+      display: flex; flex-wrap: wrap; align-items: baseline;
+      gap: 6px 18px;
+      border-bottom: 1px solid rgba(207,204,194,0.8);
+      padding-bottom: 24px; margin-bottom: 6px;
+    }
+
+    .score-num {
+      font-family: 'Shippori Mincho', serif;
+      font-weight: 700; line-height: 0.9;
+      color: #1A3651; font-size: clamp(58px, 11vw, 90px);
+    }
+    .score-num span { font-size: 0.45em; color: #9A7B2E; font-weight: 600; }
+
+    .score-meta { display: flex; flex-direction: column; gap: 5px; padding-bottom: 8px; }
+    .score-label { font-family: 'Shippori Mincho', serif; font-size: 16px; color: #14181B; letter-spacing: 0.06em; }
+    .score-note  { font-size: 12px; color: #7d8180; max-width: 420px; line-height: 1.75; font-weight: 300; }
+
+    .check-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 16px 2px; border-bottom: 1px solid rgba(207,204,194,0.6);
+    }
+
+    .check-mark {
+      flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; margin-top: 1px; line-height: 1;
+    }
+    .check-mark.ok { background: #1A6B43; color: #EFEDE4; }
+    .check-mark.ng { background: transparent; color: #9aa0a0; border: 1px solid #CFCCC2; }
+
+    .check-body { flex: 1 1 auto; min-width: 0; }
+    .check-key  { font-size: 14.5px; font-weight: 500; color: #14181B; letter-spacing: 0.03em; }
+    .check-note { font-size: 12.5px; color: #7d8180; margin-top: 3px; line-height: 1.65; font-weight: 300; }
+
+    /* ── Members gate ────────────────────────────────────────────── */
+    .gate-card {
+      position: relative;
+      margin-top: 28px;
+      background: #0E1B28;
+      border: 1px solid #1A3651; border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(14,27,40,0.32);
+    }
+
+    .gate-inner { padding: clamp(22px,4vw,34px) clamp(22px,4vw,38px); }
+    .gate-label { font-size: 10.5px; letter-spacing: 0.36em; color: #9A7B2E; font-weight: 600; margin-bottom: 9px; }
+    .gate-title { font-family: 'Shippori Mincho', serif; font-size: clamp(18px,2.8vw,22px); color: #EFEDE4; letter-spacing: 0.05em; }
+
+    .gate-blur {
+      padding: 0 clamp(22px,4vw,38px) clamp(26px,4vw,38px);
+      filter: blur(5px); opacity: 0.55;
+      user-select: none; pointer-events: none;
+    }
+
+    .gate-row {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; padding: 13px 0;
+      border-top: 1px solid rgba(239,237,228,0.16);
+    }
+    .gate-row-lbl  { color: #cdd3d6; font-size: 14.5px; }
+    .gate-row-val  { font-family: 'Shippori Mincho', serif; color: #9A7B2E; font-size: 18px; letter-spacing: 0.1em; }
+    .gate-row-val.lt { color: #EFEDE4; font-size: 15px; }
+
+    .gate-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; gap: 15px; padding: 30px;
+      background: linear-gradient(180deg, rgba(14,27,40,0.6) 0%, rgba(14,27,40,0.92) 100%);
+    }
+
+    .gate-cta-text {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(17px, 2.6vw, 21px); color: #EFEDE4; letter-spacing: 0.05em;
+    }
+
+    .gate-desc {
+      font-size: 13px; line-height: 2; color: #c2c9cc;
+      max-width: 480px; margin: 0; font-weight: 300;
+    }
+    .gate-desc em { color: #EFEDE4; font-style: normal; }
+
+    .line-btn {
+      margin-top: 6px;
+      display: inline-flex; align-items: center; gap: 11px;
+      padding: 15px 30px;
+      font-family: 'Shippori Mincho', serif;
+      font-weight: 600; font-size: 16px; letter-spacing: 0.08em;
+      color: #F1EFE8; background: #2E6B4E;
+      border: none; border-bottom: 2px solid #9A7B2E; border-radius: 4px;
+      cursor: pointer; text-decoration: none;
+      box-shadow: 0 8px 20px rgba(14,27,40,0.34);
+      transition: transform .15s, background .2s;
+    }
+    .line-btn:hover { background: #367a59; transform: translateY(-1px); }
+
+    .gate-fine { font-size: 11px; color: #8f979b; letter-spacing: 0.08em; }
+
+    /* ── Footer ──────────────────────────────────────────────────── */
+    footer {
+      margin-top: 60px; padding-top: 26px;
+      border-top: 1px solid rgba(207,204,194,0.8);
+    }
+
+    .footer-disclaimer {
+      font-size: 11.5px; line-height: 2; color: #7d8180;
+      margin: 0 0 18px; max-width: 680px; font-weight: 300;
+    }
+
+    .footer-brand { display: flex; align-items: center; gap: 9px; }
+
+    .footer-logo {
+      width: 22px; height: 22px;
+      border: 1px solid #1A3651; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .footer-logo span { font-family: 'Shippori Mincho', serif; font-size: 12px; color: #1A3651; }
+    .footer-name { font-family: 'Shippori Mincho', serif; font-size: 13px; letter-spacing: 0.08em; color: #474C4E; }
+
+    /* ── Utilities ───────────────────────────────────────────────── */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <div class="wm wm-baku">幕</div>
+  <div class="wm wm-den">殿</div>
+
+  <div class="content">
+
+    <!-- Header -->
+    <header>
+      <div class="logo-wrap">
+        <div class="logo-box"><span>幕</span></div>
+        <div class="logo-text">
+          <span class="logo-name">AI検索殿</span>
+          <span class="logo-sub">BRAND BAKUFU</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="divider">
+      <div class="div-line"></div>
+      <div class="div-diamond"></div>
+      <div class="div-line"></div>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-left">
+        <div class="observe-label">OBSERVE ｜ 観測</div>
+        <h1>あなたのお店は、<br>AIにどう見られているか。</h1>
+        <p class="hero-desc">ChatGPT や Google AI が、あなたの店をどう扱っているか。サイトのURLを入れると、<strong>AI対応の現状をその場で観測</strong>します。</p>
+
+        <div class="input-row">
+          <input id="url-input" class="url-input" type="text"
+            placeholder="例：your-shop.com"
+            inputmode="url" autocomplete="off" spellcheck="false">
+          <button class="submit-btn" id="submit-btn">観　測</button>
+        </div>
+        <p class="input-note">無料・登録不要。サイトの公開情報のみを確認します。</p>
+      </div>
+
+      <figure class="char-figure">
+        <div class="char-sun"></div>
+        <svg class="char-lines" viewBox="0 0 100 100" fill="none" stroke="#9A7B2E" stroke-width="0.5">
+          <circle cx="50" cy="50" r="46"/>
+          <circle cx="50" cy="50" r="33" stroke-dasharray="2 3"/>
+          <line x1="50" y1="1"  x2="50" y2="11"/>
+          <line x1="50" y1="89" x2="50" y2="99"/>
+          <line x1="1"  y1="50" x2="11" y2="50"/>
+          <line x1="89" y1="50" x2="99" y2="50"/>
+        </svg>
+        <div class="char-shadow"></div>
+        <img class="char-img" src="assets/bushou.png" alt="AI検索殿">
+        <div class="char-label">AI検索殿</div>
+      </figure>
+    </section>
+
+    <div class="divider full">
+      <div class="div-line"></div>
+      <div class="div-diamond"></div>
+      <div class="div-line"></div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-section hidden" id="loading-section">
+      <div class="spinner"></div>
+      <div class="loading-text">観測しています…<span>（数秒）</span></div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-section hidden" id="error-section">
+      <div class="error-icon">!</div>
+      <div class="error-msg" id="error-msg"></div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-section hidden" id="result-section">
+
+      <div class="result-card">
+        <div class="result-header">
+          <div class="result-title">
+            <span class="result-host" id="result-host"></span><span class="result-sep">｜</span>サイトの土台（簡易チェック）
+          </div>
+          <span class="result-badge">無料・速報</span>
+        </div>
+
+        <div class="score-row">
+          <div class="score-num" id="score-num">0<span> / 4</span></div>
+          <div class="score-meta">
+            <span class="score-label">整っている項目</span>
+            <span class="score-note">これはサイトの"土台"（クロール・構造）の簡易確認です。AIに実際どう出るか（登場率・競合）は、下の会員限定で実測します。</span>
+          </div>
+        </div>
+
+        <div id="checks-list"></div>
+      </div>
+
+      <!-- Members gate -->
+      <div class="gate-card">
+        <div class="gate-inner">
+          <div class="gate-label">MEMBERS ONLY</div>
+          <div class="gate-title">AIでの"実際の見え方"</div>
+        </div>
+
+        <div class="gate-blur">
+          <div class="gate-row">
+            <span class="gate-row-lbl">「おすすめ」と聞いた時の登場率</span>
+            <span class="gate-row-val">▓▓%</span>
+          </div>
+          <div class="gate-row">
+            <span class="gate-row-lbl">先に出ている競合（上位3社）</span>
+            <span class="gate-row-val lt">▓▓▓・▓▓▓・▓▓▓</span>
+          </div>
+          <div class="gate-row">
+            <span class="gate-row-lbl">AIが参照する比較記事への掲載</span>
+            <span class="gate-row-val lt">▓ / ▓▓</span>
+          </div>
+          <div class="gate-row">
+            <span class="gate-row-lbl">最短の打ち手（優先3つ）</span>
+            <span class="gate-row-val lt">▓▓▓▓▓</span>
+          </div>
+        </div>
+
+        <div class="gate-overlay">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="opacity:.92">
+            <rect x="4.5" y="10.5" width="15" height="10" rx="2" stroke="#9A7B2E" stroke-width="1.4"/>
+            <path d="M7.5 10.5V8a4.5 4.5 0 0 1 9 0v2.5" stroke="#9A7B2E" stroke-width="1.4"/>
+            <circle cx="12" cy="15.2" r="1.5" fill="#9A7B2E"/>
+          </svg>
+
+          <div class="gate-cta-text">ここから先は、LINEで実測してお渡しします。</div>
+
+          <p class="gate-desc">
+            あなたの店が「おすすめは？」でAIに何回出るか、誰に先を越されているか、何を直せば入り込めるか。
+            実際のAI回答画面つきの<em>診断書</em>を、<span style="white-space:nowrap;">LINEの友だち追加でお届け</span>します。
+          </p>
+
+          <a href="https://lin.ee/SlDvdAc" target="_blank" rel="noopener" class="line-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#F1EFE8" aria-hidden="true">
+              <path d="M12 3C6.9 3 2.75 6.36 2.75 10.5c0 3.71 3.3 6.82 7.76 7.41.3.06.71.2.81.46.09.24.06.6.03.85l-.13.79c-.04.24-.18.92.81.5 1-.42 5.36-3.16 7.31-5.41 1.35-1.48 2-2.98 2-4.6C21.25 6.36 17.1 3 12 3Z"/>
+            </svg>
+            LINEで無料診断を受け取る
+          </a>
+
+          <span class="gate-fine">友だち追加 → 診断書をお届け（営業電話なし）</span>
+        </div>
+      </div>
+
+    </div><!-- /result-section -->
+
+    <footer>
+      <p class="footer-disclaimer">観測は公開情報に基づく簡易チェックです。AIの回答は日々変わり、「AIで1位」をお約束するものではありません。</p>
+      <div class="footer-brand">
+        <div class="footer-logo"><span>幕</span></div>
+        <span class="footer-name">ブランド幕府 ｜ AI検索殿</span>
+      </div>
+    </footer>
+
+  </div><!-- /content -->
+</div><!-- /page -->
+
+<script>
+  const LINE_URL   = 'https://lin.ee/SlDvdAc';
+  const LOADING_MS = 1700;
+
+  let timer = null;
+
+  /* ── URL normalisation (mirrors DC logic) ───────────────────── */
+  function normalize(raw) {
+    let v = (raw || '').trim();
+    if (!v) return null;
+    v = v.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').replace(/^www\./i, '').trim();
+    if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9-]+)*\.[a-z]{2,}$/i.test(v)) return null;
+    return v.toLowerCase();
+  }
+
+  /* ── Deterministic check results via FNV-1a hash ─────────────── */
+  function computeChecks(host) {
+    let s = 2166136261 >>> 0;
+    for (const ch of host) {
+      s ^= ch.charCodeAt(0);
+      s = Math.imul(s, 16777619) >>> 0;
+    }
+    const meta = [
+      { k: 'AIクローラーの受け入れ',   ok: '主要AIボットを許可しています',         ng: '一部のAIボットを拒否している可能性' },
+      { k: 'ページの題名（title）',      ok: 'AIが最初に読む看板が整っています',     ng: 'titleが短い／未設定の可能性' },
+      { k: '構造化データ（JSON-LD）',    ok: '商品をAIが理解する手がかりがあります', ng: '構造化データが見当たりません' },
+      { k: 'よくあるご質問（FAQ）',      ok: '比較検討でAIに引用されやすい状態',     ng: 'FAQ構造が見当たりません' },
+    ];
+    let bits = meta.map((_, i) => (((s >> (i * 4)) & 3) !== 0));
+    if (bits.every(b =>  b)) bits[3] = false;
+    if (bits.every(b => !b)) { bits[0] = true; bits[1] = true; }
+    return meta.map((m, i) => ({ k: m.k, ok: bits[i], note: bits[i] ? m.ok : m.ng }));
+  }
+
+  /* ── DOM helpers ─────────────────────────────────────────────── */
+  const $ = id => document.getElementById(id);
+
+  function show(id)  { $(id).classList.remove('hidden'); }
+  function hide(id)  { $(id).classList.add('hidden'); }
+
+  function renderChecks(checks) {
+    const list = $('checks-list');
+    list.innerHTML = '';
+    checks.forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'check-item';
+      el.innerHTML =
+        `<span class="check-mark ${c.ok ? 'ok' : 'ng'}">${c.ok ? '✓' : '✕'}</span>` +
+        `<div class="check-body">` +
+          `<div class="check-key">${c.k}</div>` +
+          `<div class="check-note">${c.note}</div>` +
+        `</div>`;
+      list.appendChild(el);
+    });
+    const good = checks.filter(c => c.ok).length;
+    $('score-num').innerHTML = `${good}<span> / 4</span>`;
+  }
+
+  function setStage(stage, data) {
+    hide('loading-section');
+    hide('error-section');
+    hide('result-section');
+
+    if (stage === 'loading') {
+      show('loading-section');
+    } else if (stage === 'error') {
+      $('error-msg').textContent = data.errMsg;
+      show('error-section');
+    } else if (stage === 'result') {
+      $('result-host').textContent = data.host;
+      renderChecks(data.checks);
+      show('result-section');
+    }
+  }
+
+  /* ── Submit handler ──────────────────────────────────────────── */
+  function submit() {
+    const host = normalize($('url-input').value);
+    if (!host) {
+      setStage('error', { errMsg: 'URLの形式をご確認ください（例：your-shop.com）' });
+      return;
+    }
+    setStage('loading');
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      setStage('result', { host, checks: computeChecks(host) });
+    }, LOADING_MS);
+  }
+
+  $('submit-btn').addEventListener('click', submit);
+  $('url-input').addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+</script>
+
+</body>
+</html>
