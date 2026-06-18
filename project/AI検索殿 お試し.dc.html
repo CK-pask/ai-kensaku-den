@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:#DFDFD8;}
+::selection{background:#1A3651;color:#EFEDE4;}
+@keyframes mbSpin{to{transform:rotate(360deg);}}
+@keyframes mbFade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+@keyframes mbRise{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+input::placeholder{color:#9aa0a0;}
+</style>
+</helmet>
+<div style="position:relative;min-height:100vh;overflow:hidden;background-color:#DFDFD8;background-image:radial-gradient(1100px 620px at 50% -12%, rgba(26,54,81,0.08), transparent 70%), repeating-linear-gradient(0deg, rgba(18,26,34,0.02) 0 1px, transparent 1px 42px), repeating-linear-gradient(90deg, rgba(18,26,34,0.02) 0 1px, transparent 1px 42px);font-family:'Noto Sans JP',sans-serif;color:#14181B;">
+
+  <div style="position:absolute;top:-5%;right:-3%;font-family:'Shippori Mincho',serif;font-size:min(58vw,640px);line-height:0.8;font-weight:800;color:#1A3651;opacity:0.05;pointer-events:none;user-select:none;z-index:0;">幕</div>
+  <div style="position:absolute;bottom:-7%;left:-4%;font-family:'Shippori Mincho',serif;font-size:min(42vw,440px);line-height:0.8;font-weight:700;color:#1A3651;opacity:0.035;pointer-events:none;user-select:none;z-index:0;">殿</div>
+
+  <div style="position:relative;z-index:2;max-width:980px;margin:0 auto;padding:0 24px 80px;">
+
+    <header style="display:flex;justify-content:center;padding:40px 0 30px;">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="width:50px;height:50px;border:1px solid #1A3651;border-radius:7px;display:flex;align-items:center;justify-content:center;background:rgba(239,237,228,0.5);box-shadow:inset 0 0 0 3px rgba(154,123,46,0.16);">
+          <span style="font-family:'Shippori Mincho',serif;font-weight:700;font-size:26px;color:#1A3651;">幕</span>
+        </div>
+        <div style="display:flex;flex-direction:column;line-height:1;">
+          <span style="font-family:'Shippori Mincho',serif;font-weight:700;font-size:23px;letter-spacing:0.12em;color:#14181B;">AI検索殿</span>
+          <span style="font-size:9px;letter-spacing:0.5em;color:#9A7B2E;margin-top:7px;font-weight:500;">BRAND BAKUFU</span>
+        </div>
+      </div>
+    </header>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;">
+      <div style="height:1px;width:46px;background:#1A3651;opacity:0.45;"></div>
+      <div style="width:5px;height:5px;border:1px solid #9A7B2E;transform:rotate(45deg);"></div>
+      <div style="height:1px;width:46px;background:#1A3651;opacity:0.45;"></div>
+    </div>
+
+    <section style="display:flex;flex-wrap:wrap;align-items:center;gap:28px;padding:46px 0 26px;">
+      <div style="flex:1 1 360px;min-width:300px;">
+        <div style="font-size:10.5px;letter-spacing:0.42em;color:#9A7B2E;font-weight:600;margin-bottom:20px;">OBSERVE ｜ 観測</div>
+        <h1 style="font-family:'Shippori Mincho',serif;font-weight:700;font-size:clamp(30px,5.4vw,46px);line-height:1.5;letter-spacing:0.04em;margin:0 0 20px;color:#14181B;">あなたのお店は、<br>AIにどう見られているか。</h1>
+        <p style="font-size:14.5px;line-height:2.05;color:#474C4E;margin:0 0 30px;max-width:460px;font-weight:300;">ChatGPT や Google AI が、あなたの店をどう扱っているか。サイトのURLを入れると、<span style="color:#1A3651;font-weight:500;">AI対応の現状をその場で観測</span>します。</p>
+
+        <div style="display:flex;flex-wrap:wrap;gap:10px;max-width:480px;">
+          <input value="{{ input }}" onInput="{{ onInput }}" onKeyDown="{{ onKey }}" placeholder="例：your-shop.com" inputMode="url" autoComplete="off" spellCheck="false" style="flex:1 1 240px;min-width:0;padding:15px 17px;font-family:'Noto Sans JP',sans-serif;font-size:15px;color:#14181B;background:#F1EFE8;border:1px solid #CFCCC2;border-radius:3px;outline:none;" style-focus="border-color:#1A3651;box-shadow:0 0 0 3px rgba(26,54,81,0.1);" />
+          <button onClick="{{ submit }}" style="flex:0 0 auto;padding:15px 32px;font-family:'Shippori Mincho',serif;font-weight:600;font-size:16px;letter-spacing:0.18em;color:#EFEDE4;background:#1A3651;border:none;border-bottom:2px solid #9A7B2E;border-radius:3px;cursor:pointer;transition:background .2s;" style-hover="background:#244a6e;">観　測</button>
+        </div>
+        <p style="font-size:11.5px;color:#7d8180;margin:15px 0 0;letter-spacing:0.04em;">無料・登録不要。サイトの公開情報のみを確認します。</p>
+      </div>
+
+      <sc-if value="{{ showChar }}" hint-placeholder-val="{{ true }}">
+        <figure style="flex:0 0 auto;width:clamp(224px,28vw,300px);margin:0 auto;position:relative;">
+          <div style="position:absolute;top:-7%;left:50%;transform:translateX(-50%);width:112%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 40% 36%, rgba(206,166,82,0.62) 0%, rgba(154,123,46,0.5) 44%, rgba(138,108,40,0.22) 66%, rgba(138,108,40,0) 74%);z-index:0;pointer-events:none;"></div>
+          <svg viewBox="0 0 100 100" fill="none" stroke="#9A7B2E" stroke-width="0.5" style="position:absolute;top:-13%;right:-11%;width:50%;height:auto;z-index:0;opacity:0.5;pointer-events:none;">
+            <circle cx="50" cy="50" r="46"></circle>
+            <circle cx="50" cy="50" r="33" stroke-dasharray="2 3"></circle>
+            <line x1="50" y1="1" x2="50" y2="11"></line>
+            <line x1="50" y1="89" x2="50" y2="99"></line>
+            <line x1="1" y1="50" x2="11" y2="50"></line>
+            <line x1="89" y1="50" x2="99" y2="50"></line>
+          </svg>
+          <div style="position:absolute;bottom:-3%;left:50%;transform:translateX(-50%);width:124%;height:36%;background:radial-gradient(ellipse at center, rgba(14,24,34,0.5) 0%, rgba(14,24,34,0) 70%);z-index:0;filter:blur(7px);pointer-events:none;"></div>
+          <img src="assets/bushou.png" alt="AI検索殿" style="position:relative;z-index:2;width:100%;height:auto;display:block;filter:drop-shadow(0 22px 30px rgba(14,24,34,0.28));" />
+          <div style="position:absolute;z-index:3;top:11%;right:9.5%;writing-mode:vertical-rl;font-family:'Shippori Mincho',serif;font-weight:600;font-size:clamp(11px,1.5vw,15px);letter-spacing:0.2em;color:#EFEDE4;transform:rotate(-2.5deg);text-shadow:0 1px 2px rgba(26,54,81,0.55);pointer-events:none;">AI検索殿</div>
+        </figure>
+      </sc-if>
+    </section>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0 0;">
+      <div style="height:1px;flex:1;background:#1A3651;opacity:0.28;"></div>
+      <div style="width:5px;height:5px;border:1px solid #9A7B2E;transform:rotate(45deg);"></div>
+      <div style="height:1px;flex:1;background:#1A3651;opacity:0.28;"></div>
+    </div>
+
+    <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:18px;padding:74px 0;">
+        <div style="width:42px;height:42px;border:2px solid rgba(26,54,81,0.16);border-top-color:#1A3651;border-radius:50%;animation:mbSpin .9s linear infinite;"></div>
+        <div style="font-family:'Shippori Mincho',serif;font-size:17px;letter-spacing:0.14em;color:#1A3651;">観測しています…<span style="font-size:13px;color:#7d8180;">（数秒）</span></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isError }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:62px 0;">
+        <div style="width:40px;height:40px;border:1.5px solid #A1402F;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#A1402F;font-family:'Shippori Mincho',serif;font-size:22px;">!</div>
+        <div style="font-size:14.5px;color:#474C4E;letter-spacing:0.02em;">{{ errMsg }}</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isResult }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:40px 0 0;">
+
+        <div style="background:#F1EFE8;border:1px solid #CFCCC2;border-radius:5px;padding:clamp(22px,4vw,38px);box-shadow:0 12px 32px rgba(14,24,34,0.07);">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:24px;">
+            <div style="font-family:'Shippori Mincho',serif;font-size:clamp(15px,2.4vw,18px);color:#14181B;letter-spacing:0.03em;"><span style="color:#1A3651;">{{ host }}</span><span style="color:#b3afa2;margin:0 10px;">｜</span>サイトの土台（簡易チェック）</div>
+            <span style="flex:0 0 auto;font-size:10.5px;letter-spacing:0.16em;color:#9A7B2E;border:1px solid #9A7B2E;border-radius:999px;padding:5px 13px;font-weight:500;">無料・速報</span>
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;border-bottom:1px solid rgba(207,204,194,0.8);padding-bottom:24px;margin-bottom:6px;">
+            <div style="font-family:'Shippori Mincho',serif;font-weight:700;line-height:0.9;color:#1A3651;font-size:clamp(58px,11vw,90px);">{{ goodCount }}<span style="font-size:0.45em;color:#9A7B2E;font-weight:600;"> / 4</span></div>
+            <div style="display:flex;flex-direction:column;gap:5px;padding-bottom:8px;">
+              <span style="font-family:'Shippori Mincho',serif;font-size:16px;color:#14181B;letter-spacing:0.06em;">整っている項目</span>
+              <span style="font-size:12px;color:#7d8180;max-width:420px;line-height:1.75;font-weight:300;">これはサイトの“土台”（クロール・構造）の簡易確認です。AIに実際どう出るか（登場率・競合）は、下の会員限定で実測します。</span>
+            </div>
+          </div>
+
+          <sc-for list="{{ checks }}" as="c" hint-placeholder-count="4">
+            <div style="display:flex;align-items:flex-start;gap:14px;padding:16px 2px;border-bottom:1px solid rgba(207,204,194,0.6);">
+              <span style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;margin-top:1px;line-height:1;" style="{{ c.markStyle }}">{{ c.markGlyph }}</span>
+              <div style="flex:1 1 auto;min-width:0;">
+                <div style="font-size:14.5px;font-weight:500;color:#14181B;letter-spacing:0.03em;">{{ c.k }}</div>
+                <div style="font-size:12.5px;color:#7d8180;margin-top:3px;line-height:1.65;font-weight:300;">{{ c.note }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="position:relative;margin-top:28px;background:#0E1B28;border:1px solid #1A3651;border-radius:5px;overflow:hidden;box-shadow:0 16px 40px rgba(14,27,40,0.32);">
+          <div style="padding:clamp(22px,4vw,34px) clamp(22px,4vw,38px);">
+            <div style="font-size:10.5px;letter-spacing:0.36em;color:#9A7B2E;font-weight:600;margin-bottom:9px;">MEMBERS ONLY</div>
+            <div style="font-family:'Shippori Mincho',serif;font-size:clamp(18px,2.8vw,22px);color:#EFEDE4;letter-spacing:0.05em;">AIでの“実際の見え方”</div>
+          </div>
+
+          <div style="padding:0 clamp(22px,4vw,38px) clamp(26px,4vw,38px);filter:blur(5px);opacity:0.55;user-select:none;pointer-events:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:13px 0;border-top:1px solid rgba(239,237,228,0.16);">
+              <span style="color:#cdd3d6;font-size:14.5px;">「おすすめ」と聞いた時の登場率</span><span style="font-family:'Shippori Mincho',serif;color:#9A7B2E;font-size:18px;letter-spacing:0.1em;">▓▓%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:13px 0;border-top:1px solid rgba(239,237,228,0.16);">
+              <span style="color:#cdd3d6;font-size:14.5px;">先に出ている競合（上位3社）</span><span style="color:#EFEDE4;font-size:15px;letter-spacing:0.1em;">▓▓▓・▓▓▓・▓▓▓</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:13px 0;border-top:1px solid rgba(239,237,228,0.16);">
+              <span style="color:#cdd3d6;font-size:14.5px;">AIが参照する比較記事への掲載</span><span style="color:#EFEDE4;font-size:15px;letter-spacing:0.1em;">▓ / ▓▓</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:13px 0;border-top:1px solid rgba(239,237,228,0.16);">
+              <span style="color:#cdd3d6;font-size:14.5px;">最短の打ち手（優先3つ）</span><span style="color:#EFEDE4;font-size:15px;letter-spacing:0.1em;">▓▓▓▓▓</span>
+            </div>
+          </div>
+
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:15px;padding:30px;background:linear-gradient(180deg, rgba(14,27,40,0.6) 0%, rgba(14,27,40,0.92) 100%);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="opacity:0.92;"><rect x="4.5" y="10.5" width="15" height="10" rx="2" stroke="#9A7B2E" stroke-width="1.4"/><path d="M7.5 10.5V8a4.5 4.5 0 0 1 9 0v2.5" stroke="#9A7B2E" stroke-width="1.4"/><circle cx="12" cy="15.2" r="1.5" fill="#9A7B2E"/></svg>
+            <div style="font-family:'Shippori Mincho',serif;font-size:clamp(17px,2.6vw,21px);color:#EFEDE4;letter-spacing:0.05em;">ここから先は、LINEで実測してお渡しします。</div>
+            <p style="font-size:13px;line-height:2;color:#c2c9cc;max-width:480px;margin:0;font-weight:300;">あなたの店が「おすすめは？」でAIに何回出るか、誰に先を越されているか、何を直せば入り込めるか。実際のAI回答画面つきの<span style="color:#EFEDE4;">診断書</span>を、<span style="white-space:nowrap;">LINEの友だち追加でお届け</span>します。</p>
+            <a href="{{ lineHref }}" target="_blank" rel="noopener" style="margin-top:6px;display:inline-flex;align-items:center;gap:11px;padding:15px 30px;font-family:'Shippori Mincho',serif;font-weight:600;font-size:16px;letter-spacing:0.08em;color:#F1EFE8;background:#2E6B4E;border:none;border-bottom:2px solid #9A7B2E;border-radius:4px;cursor:pointer;text-decoration:none;box-shadow:0 8px 20px rgba(14,27,40,0.34);transition:transform .15s,background .2s;" style-hover="background:#367a59;transform:translateY(-1px);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#F1EFE8" aria-hidden="true"><path d="M12 3C6.9 3 2.75 6.36 2.75 10.5c0 3.71 3.3 6.82 7.76 7.41.3.06.71.2.81.46.09.24.06.6.03.85l-.13.79c-.04.24-.18.92.81.5 1-.42 5.36-3.16 7.31-5.41 1.35-1.48 2-2.98 2-4.6C21.25 6.36 17.1 3 12 3Z"/></svg>
+              LINEで無料診断を受け取る
+            </a>
+            <span style="font-size:11px;color:#8f979b;letter-spacing:0.08em;">友だち追加 → 診断書をお届け（営業電話なし）</span>
+          </div>
+        </div>
+
+      </div>
+    </sc-if>
+
+    <footer style="margin-top:60px;padding-top:26px;border-top:1px solid rgba(207,204,194,0.8);">
+      <p style="font-size:11.5px;line-height:2;color:#7d8180;margin:0 0 18px;max-width:680px;font-weight:300;">観測は公開情報に基づく簡易チェックです。AIの回答は日々変わり、「AIで1位」をお約束するものではありません。</p>
+      <div style="display:flex;align-items:center;gap:9px;">
+        <div style="width:22px;height:22px;border:1px solid #1A3651;border-radius:4px;display:flex;align-items:center;justify-content:center;"><span style="font-family:'Shippori Mincho',serif;font-size:12px;color:#1A3651;">幕</span></div>
+        <span style="font-family:'Shippori Mincho',serif;font-size:13px;letter-spacing:0.08em;color:#474C4E;">ブランド幕府 ｜ AI検索殿</span>
+      </div>
+    </footer>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1040, &quot;height&quot;: 1180 },
+  &quot;showCharacter&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; },
+  &quot;lineUrl&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;https://lin.ee/SlDvdAc&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;loadingMs&quot;: { &quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 1700, &quot;min&quot;: 300, &quot;max&quot;: 4000, &quot;step&quot;: 100, &quot;tsType&quot;: &quot;number&quot; },
+  &quot;demoResult&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;auto&quot;, &quot;high&quot;, &quot;low&quot;], &quot;default&quot;: &quot;auto&quot;, &quot;tsType&quot;: &quot;string&quot; }
+}">
+class Component extends DCLogic {
+  state = { stage:'idle', input:'', host:'', checks:[], errMsg:'' };
+
+  normalize(raw){
+    let v=(raw||'').trim();
+    if(!v) return null;
+    v=v.replace(/^https?:\/\//i,'').replace(/\/.*$/,'').replace(/^www\./i,'').trim();
+    if(!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9-]+)*\.[a-z]{2,}$/i.test(v)) return null;
+    return v.toLowerCase();
+  }
+
+  computeChecks(host){
+    let s=2166136261>>>0;
+    for(const ch of host){ s^=ch.charCodeAt(0); s=Math.imul(s,16777619)>>>0; }
+    const meta=[
+      {k:'AIクローラーの受け入れ', ok:'主要AIボットを許可しています', ng:'一部のAIボットを拒否している可能性'},
+      {k:'ページの題名（title）', ok:'AIが最初に読む看板が整っています', ng:'titleが短い／未設定の可能性'},
+      {k:'構造化データ（JSON-LD）', ok:'商品をAIが理解する手がかりがあります', ng:'構造化データが見当たりません'},
+      {k:'よくあるご質問（FAQ）', ok:'比較検討でAIに引用されやすい状態', ng:'FAQ構造が見当たりません'},
+    ];
+    let bits=meta.map((_,i)=>(((s>>(i*4))&3)!==0));
+    const demo=this.props.demoResult || 'auto';
+    if(demo==='high') bits=[true,true,true,false];
+    else if(demo==='low') bits=[true,false,false,false];
+    else { if(bits.every(b=>b)) bits[3]=false; if(bits.every(b=>!b)){ bits[0]=true; bits[1]=true; } }
+    return meta.map((m,i)=>({ k:m.k, ok:bits[i], note: bits[i]?m.ok:m.ng }));
+  }
+
+  submit=()=>{
+    const host=this.normalize(this.state.input);
+    if(!host){ this.setState({stage:'error', errMsg:'URLの形式をご確認ください（例：your-shop.com）'}); return; }
+    this.setState({stage:'loading', errMsg:'', host});
+    clearTimeout(this._t);
+    const ms=Math.max(300, this.props.loadingMs ?? 1700);
+    this._t=setTimeout(()=>{
+      this.setState({stage:'result', checks:this.computeChecks(host)});
+    }, ms);
+  };
+
+  renderVals(){
+    const ok='background:#1A6B43;color:#EFEDE4;';
+    const ng='background:transparent;color:#9aa0a0;border:1px solid #CFCCC2;';
+    const checks=this.state.checks.map(c=>({ k:c.k, note:c.note, markGlyph:c.ok?'✓':'✕', markStyle:c.ok?ok:ng }));
+    return {
+      input:this.state.input,
+      onInput:e=>this.setState({input:e.target.value}),
+      onKey:e=>{ if(e.key==='Enter') this.submit(); },
+      submit:this.submit,
+      isLoading:this.state.stage==='loading',
+      isError:this.state.stage==='error',
+      isResult:this.state.stage==='result',
+      host:this.state.host,
+      checks,
+      goodCount:this.state.checks.filter(c=>c.ok).length,
+      errMsg:this.state.errMsg,
+      showChar:this.props.showCharacter ?? true,
+      lineHref:this.props.lineUrl || 'https://lin.ee/SlDvdAc',
+    };
+  }
+}
+</script>
+</body>
+</html>
