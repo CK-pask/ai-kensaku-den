@@ -102,7 +102,7 @@ _[tool: show_html]_
 
 _[tool: save_screenshot]_
 
-The hero is rendering beautifully — the banner now carries the "AI検索殿" brand vertically, and the 武将 sits well. `text-wrap:balance` was the capture-killer. Now let me verify the result + gate states.
+The hero is rendering beautifully — the banner now carries the "引用丸Lite" brand vertically, and the 武将 sits well. `text-wrap:balance` was the capture-killer. Now let me verify the result + gate states.
 
 _[tool: save_screenshot]_
 
@@ -138,11 +138,11 @@ _[tool: delete_file]_
 
 _[tool: ready_for_verification]_
 
-完成しました。**AI検索殿 お試し.dc.html** — 幕府トンマナ準拠の単一ページLPです。
+完成しました。**引用丸Lite お試し.dc.html** — 幕府トンマナ準拠の単一ページLPです。
 
 主なポイント:
 - **背景**: 生成り地＋和紙グリッド罫＋金のにじみ＋「幕」「殿」のすかし。配色・書体（Shippori Mincho／Noto Sans JP）は§5の指定hex通り。
-- **武将の差し絵**: 背景を切り抜き、藍の幟旗に縦書きで「AI検索殿」をのせてヒーローに配置。
+- **武将の差し絵**: 背景を切り抜き、藍の幟旗に縦書きで「引用丸Lite」をのせてヒーローに配置。
 - **観測フロー**: URL入力 → loading → 結果（決定的モックで4項目を判定）。不正URLは丁寧なエラー。
 - **スコア表記**: §4厳守で **n / 4（分数）**、％は不使用。「土台の簡易チェック」と明示。
 - **会員限定ゲート**: ▓ の伏字（偽数値なし）をぼかし、前面に錠前カバー＋CTA。
